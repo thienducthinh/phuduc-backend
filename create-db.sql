@@ -14,20 +14,20 @@ DROP TABLE IF EXISTS Item;
 DROP TABLE IF EXISTS Supplier;
 
 
-CREATE TABLE ItemBrand (
+CREATE TABLE item_brand (
     brand_id INT(6) ZEROFILL AUTO_INCREMENT PRIMARY KEY,
     brand_name VARCHAR(255) NOT NULL,
     brand_description TEXT
 );
 
-CREATE TABLE ItemCategory (
+CREATE TABLE item_category (
     category_id INT(6) ZEROFILL AUTO_INCREMENT PRIMARY KEY,
     category_name VARCHAR(255) NOT NULL,
     category_description TEXT
 );
 
 -- -- Create the Item table
-CREATE TABLE Item (
+CREATE TABLE item (
     item_id INT(6) ZEROFILL AUTO_INCREMENT PRIMARY KEY,
     brand_id INT(6) ZEROFILL,
     category_id INT(6) ZEROFILL,
@@ -42,7 +42,7 @@ CREATE TABLE Item (
 );
 
 -- -- Create the Supplier table
-CREATE TABLE Supplier (
+CREATE TABLE supplier (
     supplier_id INT(6) ZEROFILL AUTO_INCREMENT PRIMARY KEY,
     supplier_name VARCHAR(255),
     supplier_address VARCHAR(255) ,
@@ -51,13 +51,13 @@ CREATE TABLE Supplier (
 );
 
 -- -- Create the Warehouse table
-CREATE TABLE Warehouse (
+CREATE TABLE warehouse (
     warehouse_id INT(6) ZEROFILL AUTO_INCREMENT PRIMARY KEY,
     warehouse_name VARCHAR(255)
 );
 
 -- -- Create the Inventory table
-CREATE TABLE Inventory (
+CREATE TABLE inventory (
     inventory_id INT(6) ZEROFILL AUTO_INCREMENT PRIMARY KEY,
     item_id INT(6) ZEROFILL,
     warehouse_id INT(6) ZEROFILL,
@@ -71,7 +71,7 @@ CREATE TABLE Inventory (
 );
 
 -- -- Create the InventoryTransaction table
-CREATE TABLE InventoryTransaction (
+CREATE TABLE inventory_transaction (
     transaction_id INT(9) ZEROFILL AUTO_INCREMENT PRIMARY KEY,
     warehouse_id INT(6) ZEROFILL,
     transaction_type ENUM('Purchase Order', 'Sales Order') NOT NULL,
@@ -82,7 +82,7 @@ CREATE TABLE InventoryTransaction (
         ON UPDATE CASCADE
 );
 
-CREATE TABLE InventoryTransactionLine (
+CREATE TABLE inventory_transaction_line (
     line_id SMALLINT AUTO_INCREMENT PRIMARY KEY,
     transaction_id INT(6) ZEROFILL,
     item_id INT(6) ZEROFILL,
@@ -97,14 +97,19 @@ CREATE TABLE InventoryTransactionLine (
         ON UPDATE CASCADE
 );
 
--- -- Create the PriceBook table
-CREATE TABLE PriceBook (
+CREATE TABLE price_book (
     price_book_id INT(6) ZEROFILL AUTO_INCREMENT PRIMARY KEY,
-    supplier_id INT(6) ZEROFILL,
+    business_id INT(6) ZEROFILL,
+    description VARCHAR(255),
+    price_type ENUM('Supplier', 'Customer 1', 'Customer 2', 'Customer 3') NOT NULL,
+);
+
+CREATE TABLE price_book_line (
+    line_id SMALLINT AUTO_INCREMENT PRIMARY KEY,
+    price_book_id INT(6) ZEROFILL,
     item_id INT(6) ZEROFILL,
     price DECIMAL(10, 2),
-    price_type ENUM('Supplier', 'Customer 1', 'Customer 2', 'Customer 3') NOT NULL,
-    FOREIGN KEY (supplier_id) REFERENCES Supplier(supplier_id)
+    FOREIGN KEY (price_book_id) REFERENCES PriceBook(price_book_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
     FOREIGN KEY (item_id) REFERENCES Item(item_id)
@@ -112,7 +117,7 @@ CREATE TABLE PriceBook (
         ON UPDATE CASCADE
 );
 
-CREATE TABLE PurchaseOrder (
+CREATE TABLE purchase_order (
     purchase_order_id INT(9) ZEROFILL AUTO_INCREMENT PRIMARY KEY,
     supplier_id INT(6) ZEROFILL,
     order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -124,7 +129,7 @@ CREATE TABLE PurchaseOrder (
         ON UPDATE CASCADE
 );
 
-CREATE TABLE Customer (
+CREATE TABLE customer (
     customer_id INT(6) ZEROFILL AUTO_INCREMENT PRIMARY KEY,
     customer_name VARCHAR(255),
     customer_address VARCHAR(255),
@@ -133,7 +138,7 @@ CREATE TABLE Customer (
     price_type ENUM('Customer 1', 'Customer 2', 'Customer 3') NOT NULL
 );
 
-CREATE TABLE SalesOrder (
+CREATE TABLE sales_order (
     sales_order_id INT(9) ZEROFILL AUTO_INCREMENT PRIMARY KEY,
     customer_id INT(6) ZEROFILL,
     order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -145,7 +150,7 @@ CREATE TABLE SalesOrder (
         ON UPDATE CASCADE    
 );
 
-CREATE TABLE InventoryAdjustment (
+CREATE TABLE inventory_adjustment (
     adjustment_id INT(9) ZEROFILL AUTO_INCREMENT PRIMARY KEY,    
     adjustment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (adjustment_id) REFERENCES InventoryTransaction(transaction_id)
