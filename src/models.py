@@ -7,10 +7,10 @@ from sqlalchemy import (
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 
+from src.core.database import Base, engine, AsyncSessionLocal
+
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")   # <-- now a pymssql URL
-
-Base = declarative_base()
 
 # ------------------- MODELS -------------------
 class Item(Base):
@@ -37,16 +37,19 @@ class SalesOrder(Base):
 # ---------------------------------------------
 
 # ------------------- ENGINE -------------------
-engine = create_engine(
-    DATABASE_URL,
-    # optional but nice
-    pool_pre_ping=True,
-    echo=False,                 # set True if you want SQL logging
-)
+# engine = create_engine(
+#     DATABASE_URL,
+#     # optional but nice
+#     pool_pre_ping=True,
+#     echo=False,                 # set True if you want SQL logging
+# )
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# This now works without any HY104 errors
-Base.metadata.create_all(bind=engine)
-print("Tables created (or already exist).")
+# Create tables using async engine
+async def init_db():
+    """Initialize database tables - call this from FastAPI startup event"""
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    print("Tables created (or already exist).")
 # ---------------------------------------------
