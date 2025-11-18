@@ -1,16 +1,7 @@
-import os
-from dotenv import load_dotenv
+from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from sqlalchemy.orm import relationship
 
-from sqlalchemy import (
-    create_engine, Column, Integer, String, Float, ForeignKey
-)
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, relationship
-
-from src.core.database import Base, engine, AsyncSessionLocal
-
-load_dotenv()
-DATABASE_URL = os.getenv("DATABASE_URL")   # <-- now a pymssql URL
+from src.core.database import Base, engine
 
 # ------------------- MODELS -------------------
 class Item(Base):

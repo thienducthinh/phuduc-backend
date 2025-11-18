@@ -2,17 +2,18 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.routes import router
 from src.models import init_db
-from dotenv import load_dotenv
-import os
+from src.config import settings
+# from dotenv import load_dotenv
+# import os
 
-load_dotenv()  # Load .env
-FRONT_END_URL = os.getenv("FRONTEND_URL")
+# load_dotenv()  # Load .env
+# FRONT_END_URL = os.getenv("FRONTEND_URL")
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[FRONT_END_URL],  # Allow your front-end origin (add more if needed, or ["*"] for all - insecure for prod)
+    allow_origins=[settings.ALLOWED_ORIGINS],  # Allow your front-end origin (add more if needed, or ["*"] for all - insecure for prod)
     allow_credentials=True,  # If using cookies/auth
     allow_methods=["*"],  # Allow all methods (GET, POST, etc.)
     allow_headers=["*"],  # Allow all headers

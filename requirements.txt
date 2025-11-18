@@ -5,3 +5,5 @@ pydantic
 python-dotenv
 pydantic_settings
 pymssql
+aioodbc
+pyodbc
