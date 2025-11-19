@@ -1,15 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel
-from src.models import PurchaseOrder, SalesOrder, Item
+from src.modules.purchasing.models import PurchaseOrder
+from src.modules.inventory.models import Item
 from src.core.database import AsyncSessionLocal
 
 router = APIRouter()
 
 class POCreate(BaseModel):
     supplier: str
-    item_id: int
-    quantity: int
 
 class SOCreate(BaseModel):
     customer: str
@@ -25,7 +24,7 @@ async def get_db():
 
 @router.post("/po/")
 async def create_po(po: POCreate, db: AsyncSession = Depends(get_db)):
-    db_po = PurchaseOrder(supplier=po.supplier, item_id=po.item_id, quantity=po.quantity)
+    db_po = PurchaseOrder(supplier=po.supplier)
     db.add(db_po)
     await db.commit()
     await db.refresh(db_po)

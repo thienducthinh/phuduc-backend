@@ -1,10 +1,8 @@
 from sqlalchemy import Column, Integer, String, Float
-from src.core.base import Base
+from src.core.database import Base
 
-class InventoryItem(Base):
-    __tablename__ = "inventory_items"
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
-    quantity = Column(Integer)
+class Item(Base):
+    __tablename__ = "items"
+    id    = Column(Integer, primary_key=True, index=True)
+    name  = Column(String(255), index=True)
     price = Column(Float)
