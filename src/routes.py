@@ -1,43 +1,17 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession
-from pydantic import BaseModel
-from src.modules.purchasing.models import PurchaseOrder
-from src.modules.inventory.models import Item
-from src.core.database import AsyncSessionLocal
+# Routes have been reorganized into their respective domain modules:
+# - PO routes -> src.modules.purchasing.router
+# - SO routes -> src.modules.sales.router
+# - Item routes -> src.modules.inventory.router
 
+from fastapi import APIRouter
+from src.modules.purchasing.router import router as purchasing_router
+
+# Main router that includes all module routers
 router = APIRouter()
+router.include_router(purchasing_router)
 
-class POCreate(BaseModel):
-    supplier: str
-
-class SOCreate(BaseModel):
-    customer: str
-    item_id: int
-    quantity: int
-
-async def get_db():
-    async with AsyncSessionLocal() as db:
-        try:
-            yield db
-        finally:
-            await db.close()
-
-@router.post("/po/")
-async def create_po(po: POCreate, db: AsyncSession = Depends(get_db)):
-    db_po = PurchaseOrder(supplier=po.supplier)
-    db.add(db_po)
-    await db.commit()
-    await db.refresh(db_po)
-    return db_po
-
-@router.get("/po/{po_id}")
-async def read_po(po_id: int, db: AsyncSession = Depends(get_db)):
-    from sqlalchemy import select
-    result = await db.execute(select(PurchaseOrder).filter(PurchaseOrder.id == po_id))
-    po = result.scalar_one_or_none()
-    if po is None:
-        raise HTTPException(status_code=404, detail="PO not found")
-    return po
-
-# Similar for SO: create_so, read_so
-# Add for items: create_item, etc.
+# Add more module routers as they are created:
+# from src.modules.sales.router import router as sales_router
+# from src.modules.inventory.router import router as inventory_router
+# router.include_router(sales_router)
+# router.include_router(inventory_router)
