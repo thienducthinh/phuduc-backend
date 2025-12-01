@@ -83,7 +83,7 @@ class PriceBook(Base):
     price_book_id = Column(Integer, primary_key=True, index=True)
     business_id   = Column(Integer)
     description   = Column(String(255))
-    price_type    = Column(Enum("Supplier", "Customer 1", "Customer 2", "Customer 3", name="price_type_enum"), nullable=False)
+    price_type    = Column(Enum("Supplier", "Wholesale", "Retail", name="price_type_enum"), nullable=False)
 
     lines = relationship("PriceBookLine", back_populates="price_book")
 
