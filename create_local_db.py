@@ -4,6 +4,7 @@ Run this script to initialize your local MySQL database with all tables from the
 """
 import asyncio
 import sys
+import os
 from pathlib import Path
 from urllib.parse import quote_plus
 from sqlalchemy.ext.asyncio import create_async_engine
@@ -11,6 +12,11 @@ from sqlalchemy.ext.asyncio import create_async_engine
 # Add the project root to Python path
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
+
+# Set a dummy DATABASE_URL environment variable BEFORE any imports
+# This prevents validation errors when models import src.core.database
+# Use sqlite+aiosqlite for async compatibility
+os.environ.setdefault("DATABASE_URL", "sqlite+aiosqlite:///dummy.db")
 
 # MySQL connection string for local database
 # Update these values according to your local MySQL setup
@@ -33,7 +39,7 @@ engine = create_async_engine(
     pool_pre_ping=True,
 )
 
-# Import Base and all models from the actual project
+# Import Base from the project (dummy DATABASE_URL prevents validation error)
 from src.core.database import Base
 
 # Import all models to register them with Base.metadata
