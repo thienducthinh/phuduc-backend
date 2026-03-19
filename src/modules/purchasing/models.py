@@ -21,4 +21,4 @@ class PurchaseOrder(Base):
     order_date        = Column(DateTime, server_default=func.now())
 
     supplier    = relationship("Supplier", back_populates="purchase_orders")
-    transaction = relationship("InventoryTransaction")
+    transaction = relationship("InventoryTransaction", back_populates="purchase_order")

@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Integer, DateTime, ForeignKey, func
 from sqlalchemy.orm import relationship
 from src.core.database import Base
-from src.modules.customer.models import Customer
 
 
 class SalesOrder(Base):
@@ -11,4 +10,4 @@ class SalesOrder(Base):
     order_date     = Column(DateTime, server_default=func.now())
 
     customer    = relationship("Customer", back_populates="sales_orders")
-    transaction = relationship("InventoryTransaction")
+    transaction = relationship("InventoryTransaction", back_populates="sales_order")

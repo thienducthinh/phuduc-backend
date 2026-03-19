@@ -44,9 +44,13 @@ from src.core.database import Base
 
 # Import all models to register them with Base.metadata
 # This ensures all tables are created
+from src.modules.item import models as item_models
 from src.modules.inventory import models as inventory_models
 from src.modules.purchasing import models as purchasing_models
 from src.modules.sales import models as sales_models
+from src.modules.customer import models as customer_models
+from src.modules.price_book import models as price_book_models
+from src.modules.logistics import models as logistics_models
 
 # All model classes are now imported and registered with Base.metadata
 # No need to redefine them here
