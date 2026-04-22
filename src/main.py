@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.routes import router
 from src.core.base.models import init_db
-from src.config import settings
+from src.core.config import settings
 # from dotenv import load_dotenv
 # import os
 
