@@ -78,27 +78,6 @@ class InventoryTransactionLine(Base):
     item        = relationship("Item")
 
 
-class PriceBook(Base):
-    __tablename__ = "price_book"
-    price_book_id = Column(Integer, primary_key=True, index=True)
-    business_id   = Column(Integer)
-    description   = Column(String(255))
-    price_type    = Column(Enum("Supplier", "Wholesale", "Retail", name="price_type_enum"), nullable=False)
-
-    lines = relationship("PriceBookLine", back_populates="price_book")
-
-
-class PriceBookLine(Base):
-    __tablename__ = "price_book_line"
-    line_id       = Column(Integer, primary_key=True, index=True)
-    price_book_id = Column(Integer, ForeignKey("price_book.price_book_id", ondelete="CASCADE", onupdate="CASCADE"))
-    item_id       = Column(Integer, ForeignKey("item.item_id", ondelete="CASCADE", onupdate="CASCADE"))
-    price         = Column(DECIMAL(10, 2))
-
-    price_book = relationship("PriceBook", back_populates="lines")
-    item       = relationship("Item")
-
-
 class InventoryAdjustment(Base):
     __tablename__ = "inventory_adjustment"
     adjustment_id   = Column(Integer, ForeignKey("inventory_transaction.transaction_id", ondelete="CASCADE", onupdate="CASCADE"), primary_key=True, index=True)
