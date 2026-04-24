@@ -48,7 +48,6 @@ class InventoryTransactionLine(Base):
 
     transaction = relationship("InventoryTransaction", back_populates="transaction_lines")
     item        = relationship("Item")
-<<<<<<< HEAD
 
 
 class InventoryAdjustment(Base):
@@ -57,5 +56,3 @@ class InventoryAdjustment(Base):
     adjustment_date = Column(DateTime, server_default=func.now())
 
     transaction = relationship("InventoryTransaction")
-=======
->>>>>>> f391c95de8514382ab825e03c3b06b3c6cba6114
